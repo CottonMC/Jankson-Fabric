@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "jankson",
+  "version": "${version}",
+
+  "name": "Jankson",
+  "description": "A fabric-mod wrapper for Jankson, packaged with helpful fabric-specific deserializers!",
+  "authors": [
+    "Falkreon",
+    "The Cotton Project"
+  ],
+  "contact": {
+    "homepage": "https://github.com/CottonMC/Jankson-Fabric",
+    "sources": "https://github.com/CottonMC/Jankson-Fabric"
+  },
+
+  "license": "MIT",
+  "icon": "assets/jankson/icon.png",
+
+  "environment": "*"
+}
