@@ -10,3 +10,5 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+//rootProject.name = "Jankson"

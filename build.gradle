@@ -10,8 +10,9 @@ buildscript {
 }
 
 plugins {
-	id 'fabric-loom' version '0.2.2-SNAPSHOT'
+	id 'fabric-loom' version '0.2.5-SNAPSHOT'
 	id 'maven-publish'
+	id "com.jfrog.artifactory" version "4.9.0"
 }
 
 apply plugin: "com.github.johnrengelman.shadow"
@@ -36,7 +37,13 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	
-	shadow "blue.endless:jankson:1.1.2"
+	shadow "blue.endless:jankson:1.2.0"
+}
+
+task jar(type: Jar, overwrite: true) {
+	classifier = "compile"
+	from compileJava
+	from processResources
 }
 
 shadowJar {
@@ -44,9 +51,14 @@ shadowJar {
 	configurations = [project.configurations.shadow]
 }
 
-remapJar {
+task remapJar(type: net.fabricmc.loom.task.RemapJarTask, overwrite: true) {
 	dependsOn shadowJar
-	jar = shadowJar.archivePath
+	from zipTree(shadowJar.archiveFile)
+
+	classifier = "release"
+	//	input = shadowJar.archiveFile
+	//	classifier = "release"
+	//output = file("build/libs/${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar")
 }
 
 processResources {
@@ -78,17 +90,19 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 jar {
+	//baseName = "Jankson"
 	from "LICENSE"
 }
 
 // configure the maven publication
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
+		maven(MavenPublication) {
+			artifact ("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar") { //release jar - file location not provided anywhere in loom
+				classifier null
 				builtBy remapJar
 			}
+
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
@@ -99,5 +113,30 @@ publishing {
 	repositories {
 		// uncomment to publish to the local maven
 		// mavenLocal()
+	}
+}
+
+artifactory {
+	if (project.hasProperty("artifactoryUsername")) {
+		contextUrl = 'http://server.bbkr.space:8081/artifactory/'
+		publish {
+			repository {
+				if (version.contains("SNAPSHOT")) {
+					repoKey = "libs-snapshot"
+				} else {
+					repoKey = "libs-release"
+				}
+				username = artifactoryUsername
+				password = artifactoryPassword
+			}
+			defaults {
+				publications('maven')
+
+				publishArtifacts = true
+				publishPom = true
+			}
+		}
+	} else {
+		println "Cannot configure artifactory; please define ext.artifactoryUsername and ext.artifactoryPassword before running artifactoryPublish"
 	}
 }
