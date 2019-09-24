@@ -1,7 +1,10 @@
 package io.github.cottonmc.jankson;
 
 import blue.endless.jankson.Jankson;
+import blue.endless.jankson.JsonElement;
+import blue.endless.jankson.JsonNull;
 import blue.endless.jankson.JsonObject;
+import blue.endless.jankson.JsonPrimitive;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -61,18 +64,34 @@ public class JanksonFactory {
 			.registerDeserializer(JsonObject.class, BlockState.class, BlockAndItemSerializers::getBlockState)
 			.registerSerializer(BlockState.class, BlockAndItemSerializers::saveBlockState);
 		
-		//All the things you could potentially specify with just a registry ID
 		builder
-			.registerDeserializer(String.class, Activity.class,           (s,m)->Registry.ACTIVITY              .get(new Identifier(s)))
-			.registerDeserializer(String.class, Biome.class,              (s,m)->Registry.BIOME                 .get(new Identifier(s)))
-			.registerDeserializer(String.class, BiomeSourceType.class,    (s,m)->Registry.BIOME_SOURCE_TYPE     .get(new Identifier(s)))
-			.registerDeserializer(String.class, BlockEntityType.class,    (s,m)->Registry.BLOCK_ENTITY          .get(new Identifier(s)))
-			.registerDeserializer(String.class, Carver.class,             (s,m)->Registry.CARVER                .get(new Identifier(s)))
-			.registerDeserializer(String.class, ChunkGeneratorType.class, (s,m)->Registry.CHUNK_GENERATOR_TYPE  .get(new Identifier(s)))
-			.registerDeserializer(String.class, ChunkStatus.class,        (s,m)->Registry.CHUNK_STATUS          .get(new Identifier(s)))
-			.registerDeserializer(String.class, ContainerType.class,      (s,m)->Registry.CONTAINER             .get(new Identifier(s)))
-			.registerDeserializer(String.class, Decorator.class,          (s,m)->Registry.DECORATOR             .get(new Identifier(s)))
-			.registerDeserializer(String.class, DimensionType.class,      (s,m)->Registry.DIMENSION             .get(new Identifier(s)))
+			.registerDeserializer(String.class, Identifier.class,         (s,m)->new Identifier(s))
+			.registerSerializer(Identifier.class, (i,m)->new JsonPrimitive(i.toString()))
+			;
+		
+		//All the things you could potentially specify with just a registry ID
+		register(builder, Activity.class,           Registry.ACTIVITY);
+		register(builder, Biome.class,              Registry.BIOME);
+		register(builder, BiomeSourceType.class,    Registry.BIOME_SOURCE_TYPE);
+		register(builder, BlockEntityType.class,    Registry.BLOCK_ENTITY);
+		register(builder, Carver.class,             Registry.CARVER);
+		register(builder, ChunkGeneratorType.class, Registry.CHUNK_GENERATOR_TYPE);
+		register(builder, ChunkStatus.class,        Registry.CHUNK_STATUS);
+		register(builder, ContainerType.class,      Registry.CONTAINER);
+		register(builder, Decorator.class,          Registry.DECORATOR);
+		register(builder, DimensionType.class,      Registry.DIMENSION);
+		
+		builder
+		//	.registerDeserializer(String.class, Activity.class,           (s,m)->Registry.ACTIVITY              .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, Biome.class,              (s,m)->Registry.BIOME                 .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, BiomeSourceType.class,    (s,m)->Registry.BIOME_SOURCE_TYPE     .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, BlockEntityType.class,    (s,m)->Registry.BLOCK_ENTITY          .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, Carver.class,             (s,m)->Registry.CARVER                .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, ChunkGeneratorType.class, (s,m)->Registry.CHUNK_GENERATOR_TYPE  .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, ChunkStatus.class,        (s,m)->Registry.CHUNK_STATUS          .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, ContainerType.class,      (s,m)->Registry.CONTAINER             .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, Decorator.class,          (s,m)->Registry.DECORATOR             .get(new Identifier(s)))
+		//	.registerDeserializer(String.class, DimensionType.class,      (s,m)->Registry.DIMENSION             .get(new Identifier(s)))
 			.registerDeserializer(String.class, Enchantment.class,        (s,m)->Registry.ENCHANTMENT           .get(new Identifier(s)))
 			.registerDeserializer(String.class, EntityType.class,         (s,m)->Registry.ENTITY_TYPE           .get(new Identifier(s)))
 			.registerDeserializer(String.class, Feature.class,            (s,m)->Registry.FEATURE               .get(new Identifier(s)))
@@ -101,10 +120,32 @@ public class JanksonFactory {
 			.registerDeserializer(String.class, VillagerType.class,            (s,m)->Registry.VILLAGER_TYPE         .get(new Identifier(s)))
 			;
 		
+		builder
+			.registerSerializer(Activity.class, (o,m)->lookupSerialize(o, Registry.ACTIVITY))
+			
+			;
+		
 		
 		
 		return builder;
 	}
+	
+	private static <T> void register(Jankson.Builder builder, Class<T> clazz, Registry<? extends T> registry) {
+		builder.registerDeserializer(String.class, clazz, (s,m)->lookupDeserialize(s, registry));
+		builder.registerSerializer(clazz, (o,m)->lookupSerialize(o, registry));
+	}
+	
+	private static <T> T lookupDeserialize(String s, Registry<T> registry) {
+		return registry.get(new Identifier(s));
+	}
+	
+	private static <T, U extends T> JsonElement lookupSerialize(T t, Registry<U> registry) {
+		@SuppressWarnings("unchecked") //Widening cast happening because of generic type parameters in the registry class
+		Identifier id = registry.getId((U)t);
+		if (id==null) return JsonNull.INSTANCE;
+		return new JsonPrimitive(id.toString());
+	}
+	
 	
 	public static Jankson createJankson() {
 		return builder().build();
