@@ -64,6 +64,8 @@ public class JanksonOps implements DynamicOps<JsonElement> {
             Object value = ((JsonPrimitive) input).getValue();
             if (value instanceof Number) {
                 return Optional.of((Number) value);
+            } else if (value instanceof Boolean) {
+                return Optional.of((Boolean) value ? 1 : 0);
             }
         }
         return Optional.empty();
