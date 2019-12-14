@@ -13,12 +13,15 @@
     "homepage": "https://github.com/CottonMC/Jankson-Fabric",
     "sources": "https://github.com/CottonMC/Jankson-Fabric"
   },
-  "requires": {
+  "depends": {
     "minecraft": ">=1.15"
   },
 
   "license": "MIT",
   "icon": "assets/jankson/icon.png",
 
-  "environment": "*"
+  "environment": "*",
+  "custom": {
+    "modmenu:api": true
+  }
 }
