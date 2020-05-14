@@ -21,7 +21,7 @@ public class BlockAndItemSerializers {
 
 	public static ItemStack getItemStack(JsonObject json, Marshaller m) {
 		String itemIdString = json.get(String.class, "item");
-		Item item = (Item)Registry.ITEM.getOrEmpty(new Identifier(itemIdString)).orElse(Items.AIR);
+		Item item = Registry.ITEM.getOrEmpty(new Identifier(itemIdString)).orElse(Items.AIR);
 		ItemStack stack = new ItemStack(item);
 		if (json.containsKey("count")) {
 			Integer count = json.get(Integer.class, "count");
@@ -33,7 +33,7 @@ public class BlockAndItemSerializers {
 	}
 
 	public static ItemStack getItemStackPrimitive(String s, Marshaller m) {
-		Item item = (Item)Registry.ITEM.getOrEmpty(new Identifier(s)).orElse(Items.AIR);
+		Item item = Registry.ITEM.getOrEmpty(new Identifier(s)).orElse(Items.AIR);
 		ItemStack stack = new ItemStack(item);
 		return stack;
 	}
@@ -129,7 +129,7 @@ public class BlockAndItemSerializers {
 	}
 	
 	public static <T extends Comparable<T>> BlockState withProperty(BlockState state, Property<T> property, String stringValue) {
-		Optional<T> val = property.getValue(stringValue);
+		Optional<T> val = property.parse(stringValue);
 		if (val.isPresent()) {
 			return state.with(property, val.get());
 		} else {
@@ -138,7 +138,7 @@ public class BlockAndItemSerializers {
 	}
 	
 	public static <T extends Comparable<T>> String getProperty(BlockState state, Property<T> property) {
-		return property.getName(state.get(property));
+		return property.name(state.get(property));
 	}
 	
 	public static Biome getBiome(String s, Marshaller m) {
