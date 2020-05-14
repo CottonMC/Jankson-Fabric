@@ -8,7 +8,6 @@ import blue.endless.jankson.JsonPrimitive;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.container.ContainerType;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
@@ -24,15 +23,15 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.potion.Potion;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.stat.StatType;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.pool.StructurePoolElementType;
 import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.structure.rule.RuleTest;
+import net.minecraft.structure.rule.RuleTestType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.village.PointOfInterestType;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 import net.minecraft.world.biome.Biome;
@@ -40,11 +39,11 @@ import net.minecraft.world.biome.source.BiomeSourceType;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.carver.Carver;
-import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
+import net.minecraft.world.poi.PointOfInterestType;
 
 public class JanksonFactory {
 	public static Jankson.Builder builder() {
@@ -73,13 +72,12 @@ public class JanksonFactory {
 		register(builder, Activity.class,           Registry.ACTIVITY);
 		register(builder, Biome.class,              Registry.BIOME);
 		register(builder, BiomeSourceType.class,    Registry.BIOME_SOURCE_TYPE);
-		register(builder, BlockEntityType.class,    Registry.BLOCK_ENTITY);
+		register(builder, BlockEntityType.class,    Registry.BLOCK_ENTITY_TYPE);
 		register(builder, Carver.class,             Registry.CARVER);
-		register(builder, ChunkGeneratorType.class, Registry.CHUNK_GENERATOR_TYPE);
 		register(builder, ChunkStatus.class,        Registry.CHUNK_STATUS);
-		register(builder, ContainerType.class,      Registry.CONTAINER);
+		register(builder, ScreenHandlerType.class,  Registry.SCREEN_HANDLER);
 		register(builder, Decorator.class,          Registry.DECORATOR);
-		register(builder, DimensionType.class,      Registry.DIMENSION);
+		register(builder, DimensionType.class,      Registry.DIMENSION_TYPE);
 		
 		builder
 		//	.registerDeserializer(String.class, Activity.class,           (s,m)->Registry.ACTIVITY              .get(new Identifier(s)))
@@ -98,14 +96,14 @@ public class JanksonFactory {
 			.registerDeserializer(String.class, Fluid.class,              (s,m)->Registry.FLUID                 .get(new Identifier(s)))
 			.registerDeserializer(String.class, Item.class,               (s,m)->Registry.ITEM                  .get(new Identifier(s))) //TODO: Support tags?
 			.registerDeserializer(String.class, MemoryModuleType.class,   (s,m)->Registry.MEMORY_MODULE_TYPE    .get(new Identifier(s)))
-			.registerDeserializer(String.class, PaintingMotive.class,     (s,m)->Registry.MOTIVE                .get(new Identifier(s))) //MOTIF. It's spelled "MOTIF".
+			.registerDeserializer(String.class, PaintingMotive.class,     (s,m)->Registry.PAINTING_MOTIVE       .get(new Identifier(s))) //MOTIF. It's spelled "MOTIF".
 			.registerDeserializer(String.class, ParticleType.class,       (s,m)->Registry.PARTICLE_TYPE         .get(new Identifier(s)))
 			.registerDeserializer(String.class, PointOfInterestType.class,(s,m)->Registry.POINT_OF_INTEREST_TYPE.get(new Identifier(s)))
 			.registerDeserializer(String.class, Potion.class,             (s,m)->Registry.POTION                .get(new Identifier(s)))
 			.registerDeserializer(String.class, RecipeSerializer.class,   (s,m)->Registry.RECIPE_SERIALIZER     .get(new Identifier(s)))
 			.registerDeserializer(String.class, RecipeType.class,         (s,m)->Registry.RECIPE_TYPE           .get(new Identifier(s)))
 			.registerDeserializer(String.class, Registry.class,           (s,m)->Registry.REGISTRIES            .get(new Identifier(s))) //You know you want to do it
-			.registerDeserializer(String.class, RuleTest.class,           (s,m)->Registry.RULE_TEST             .get(new Identifier(s)))
+			.registerDeserializer(String.class, RuleTestType.class,       (s,m)->Registry.RULE_TEST             .get(new Identifier(s)))
 			.registerDeserializer(String.class, Schedule.class,           (s,m)->Registry.SCHEDULE              .get(new Identifier(s)))
 			.registerDeserializer(String.class, SensorType.class,         (s,m)->Registry.SENSOR_TYPE           .get(new Identifier(s)))
 			.registerDeserializer(String.class, SoundEvent.class,         (s,m)->Registry.SOUND_EVENT           .get(new Identifier(s)))
