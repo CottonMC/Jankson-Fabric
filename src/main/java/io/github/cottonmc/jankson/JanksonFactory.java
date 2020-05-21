@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.Schedule;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.decoration.painting.PaintingMotive;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.fluid.Fluid;
@@ -35,9 +36,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSourceType;
 import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.Feature;
@@ -71,24 +70,21 @@ public class JanksonFactory {
 		//All the things you could potentially specify with just a registry ID
 		register(builder, Activity.class,           Registry.ACTIVITY);
 		register(builder, Biome.class,              Registry.BIOME);
-		register(builder, BiomeSourceType.class,    Registry.BIOME_SOURCE_TYPE);
 		register(builder, BlockEntityType.class,    Registry.BLOCK_ENTITY_TYPE);
 		register(builder, Carver.class,             Registry.CARVER);
 		register(builder, ChunkStatus.class,        Registry.CHUNK_STATUS);
 		register(builder, ScreenHandlerType.class,  Registry.SCREEN_HANDLER);
 		register(builder, Decorator.class,          Registry.DECORATOR);
-		register(builder, DimensionType.class,      Registry.DIMENSION_TYPE);
-		
+		register(builder, EntityAttribute.class,    Registry.ATTRIBUTES);
+
 		builder
 		//	.registerDeserializer(String.class, Activity.class,           (s,m)->Registry.ACTIVITY              .get(new Identifier(s)))
 		//	.registerDeserializer(String.class, Biome.class,              (s,m)->Registry.BIOME                 .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, BiomeSourceType.class,    (s,m)->Registry.BIOME_SOURCE_TYPE     .get(new Identifier(s)))
 		//	.registerDeserializer(String.class, BlockEntityType.class,    (s,m)->Registry.BLOCK_ENTITY          .get(new Identifier(s)))
 		//	.registerDeserializer(String.class, Carver.class,             (s,m)->Registry.CARVER                .get(new Identifier(s)))
 		//	.registerDeserializer(String.class, ChunkStatus.class,        (s,m)->Registry.CHUNK_STATUS          .get(new Identifier(s)))
 		//	.registerDeserializer(String.class, ContainerType.class,      (s,m)->Registry.CONTAINER             .get(new Identifier(s)))
 		//	.registerDeserializer(String.class, Decorator.class,          (s,m)->Registry.DECORATOR             .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, DimensionType.class,      (s,m)->Registry.DIMENSION             .get(new Identifier(s)))
 			.registerDeserializer(String.class, Enchantment.class,        (s,m)->Registry.ENCHANTMENT           .get(new Identifier(s)))
 			.registerDeserializer(String.class, EntityType.class,         (s,m)->Registry.ENTITY_TYPE           .get(new Identifier(s)))
 			.registerDeserializer(String.class, Feature.class,            (s,m)->Registry.FEATURE               .get(new Identifier(s)))
