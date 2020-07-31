@@ -29,10 +29,8 @@ import net.minecraft.stat.StatType;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.pool.StructurePoolElementType;
 import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.structure.rule.RuleTest;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.village.PointOfInterestType;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.village.VillagerType;
 import net.minecraft.world.biome.Biome;
@@ -45,6 +43,7 @@ import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
+import net.minecraft.world.poi.PointOfInterestType;
 
 public class JanksonFactory {
 	public static Jankson.Builder builder() {
@@ -82,35 +81,35 @@ public class JanksonFactory {
 		register(builder, DimensionType.class,      Registry.DIMENSION);
 		
 		builder
-		//	.registerDeserializer(String.class, Activity.class,           (s,m)->Registry.ACTIVITY              .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, Biome.class,              (s,m)->Registry.BIOME                 .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, BiomeSourceType.class,    (s,m)->Registry.BIOME_SOURCE_TYPE     .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, BlockEntityType.class,    (s,m)->Registry.BLOCK_ENTITY          .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, Carver.class,             (s,m)->Registry.CARVER                .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, ChunkGeneratorType.class, (s,m)->Registry.CHUNK_GENERATOR_TYPE  .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, ChunkStatus.class,        (s,m)->Registry.CHUNK_STATUS          .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, ContainerType.class,      (s,m)->Registry.CONTAINER             .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, Decorator.class,          (s,m)->Registry.DECORATOR             .get(new Identifier(s)))
-		//	.registerDeserializer(String.class, DimensionType.class,      (s,m)->Registry.DIMENSION             .get(new Identifier(s)))
-			.registerDeserializer(String.class, Enchantment.class,        (s,m)->Registry.ENCHANTMENT           .get(new Identifier(s)))
-			.registerDeserializer(String.class, EntityType.class,         (s,m)->Registry.ENTITY_TYPE           .get(new Identifier(s)))
-			.registerDeserializer(String.class, Feature.class,            (s,m)->Registry.FEATURE               .get(new Identifier(s)))
-			.registerDeserializer(String.class, Fluid.class,              (s,m)->Registry.FLUID                 .get(new Identifier(s)))
-			.registerDeserializer(String.class, Item.class,               (s,m)->Registry.ITEM                  .get(new Identifier(s))) //TODO: Support tags?
-			.registerDeserializer(String.class, MemoryModuleType.class,   (s,m)->Registry.MEMORY_MODULE_TYPE    .get(new Identifier(s)))
-			.registerDeserializer(String.class, PaintingMotive.class,     (s,m)->Registry.MOTIVE                .get(new Identifier(s))) //MOTIF. It's spelled "MOTIF".
-			.registerDeserializer(String.class, ParticleType.class,       (s,m)->Registry.PARTICLE_TYPE         .get(new Identifier(s)))
-			.registerDeserializer(String.class, PointOfInterestType.class,(s,m)->Registry.POINT_OF_INTEREST_TYPE.get(new Identifier(s)))
-			.registerDeserializer(String.class, Potion.class,             (s,m)->Registry.POTION                .get(new Identifier(s)))
-			.registerDeserializer(String.class, RecipeSerializer.class,   (s,m)->Registry.RECIPE_SERIALIZER     .get(new Identifier(s)))
-			.registerDeserializer(String.class, RecipeType.class,         (s,m)->Registry.RECIPE_TYPE           .get(new Identifier(s)))
-			.registerDeserializer(String.class, Registry.class,           (s,m)->Registry.REGISTRIES            .get(new Identifier(s))) //You know you want to do it
-			.registerDeserializer(String.class, RuleTest.class,           (s,m)->Registry.RULE_TEST             .get(new Identifier(s)))
-			.registerDeserializer(String.class, Schedule.class,           (s,m)->Registry.SCHEDULE              .get(new Identifier(s)))
-			.registerDeserializer(String.class, SensorType.class,         (s,m)->Registry.SENSOR_TYPE           .get(new Identifier(s)))
-			.registerDeserializer(String.class, SoundEvent.class,         (s,m)->Registry.SOUND_EVENT           .get(new Identifier(s)))
-			.registerDeserializer(String.class, StatType.class,           (s,m)->Registry.STAT_TYPE             .get(new Identifier(s)))
-			.registerDeserializer(String.class, StatusEffect.class,       (s,m)->Registry.STATUS_EFFECT         .get(new Identifier(s)))
+			.registerDeserializer(String.class, Activity.class,           (s,m)->Registry.ACTIVITY               .get(new Identifier(s)))
+			.registerDeserializer(String.class, Biome.class,              (s,m)->Registry.BIOME                  .get(new Identifier(s)))
+			.registerDeserializer(String.class, BiomeSourceType.class,    (s,m)->Registry.BIOME_SOURCE_TYPE      .get(new Identifier(s)))
+			.registerDeserializer(String.class, BlockEntityType.class,    (s,m)->Registry.BLOCK_ENTITY           .get(new Identifier(s)))
+			.registerDeserializer(String.class, Carver.class,             (s,m)->Registry.CARVER                 .get(new Identifier(s)))
+			.registerDeserializer(String.class, ChunkGeneratorType.class, (s,m)->Registry.CHUNK_GENERATOR_TYPE   .get(new Identifier(s)))
+			.registerDeserializer(String.class, ChunkStatus.class,        (s,m)->Registry.CHUNK_STATUS           .get(new Identifier(s)))
+			.registerDeserializer(String.class, ContainerType.class,      (s,m)->Registry.CONTAINER              .get(new Identifier(s)))
+			.registerDeserializer(String.class, Decorator.class,          (s,m)->Registry.DECORATOR              .get(new Identifier(s)))
+			.registerDeserializer(String.class, DimensionType.class,      (s,m)->Registry.DIMENSION              .get(new Identifier(s)))
+			.registerDeserializer(String.class, Enchantment.class,        (s,m)->Registry.ENCHANTMENT            .get(new Identifier(s)))
+			.registerDeserializer(String.class, EntityType.class,         (s,m)->Registry.ENTITY_TYPE            .get(new Identifier(s)))
+			.registerDeserializer(String.class, Feature.class,            (s,m)->Registry.FEATURE                .get(new Identifier(s)))
+			.registerDeserializer(String.class, Fluid.class,              (s,m)->Registry.FLUID                  .get(new Identifier(s)))
+			.registerDeserializer(String.class, Item.class,               (s,m)->Registry.ITEM                   .get(new Identifier(s))) //TODO: Support tags?
+			.registerDeserializer(String.class, MemoryModuleType.class,   (s,m)->Registry.MEMORY_MODULE_TYPE     .get(new Identifier(s)))
+			.registerDeserializer(String.class, PaintingMotive.class,     (s,m)->Registry.PAINTING_MOTIVE        .get(new Identifier(s))) //MOTIF. It's spelled "MOTIF".
+			.registerDeserializer(String.class, ParticleType.class,       (s,m)->Registry.PARTICLE_TYPE          .get(new Identifier(s)))
+			.registerDeserializer(String.class, PointOfInterestType.class,(s, m)->Registry.POINT_OF_INTEREST_TYPE.get(new Identifier(s)))
+			.registerDeserializer(String.class, Potion.class,             (s,m)->Registry.POTION                 .get(new Identifier(s)))
+			.registerDeserializer(String.class, RecipeSerializer.class,   (s,m)->Registry.RECIPE_SERIALIZER      .get(new Identifier(s)))
+			.registerDeserializer(String.class, RecipeType.class,         (s,m)->Registry.RECIPE_TYPE            .get(new Identifier(s)))
+			.registerDeserializer(String.class, Registry.class,           (s,m)->Registry.REGISTRIES             .get(new Identifier(s))) //You know you want to do it
+//			.registerDeserializer(String.class, RuleTest.class,           (s,m)->Registry.RULE_TEST              .get(new Identifier(s)))
+			.registerDeserializer(String.class, Schedule.class,           (s,m)->Registry.SCHEDULE               .get(new Identifier(s)))
+			.registerDeserializer(String.class, SensorType.class,         (s,m)->Registry.SENSOR_TYPE            .get(new Identifier(s)))
+			.registerDeserializer(String.class, SoundEvent.class,         (s,m)->Registry.SOUND_EVENT            .get(new Identifier(s)))
+			.registerDeserializer(String.class, StatType.class,           (s,m)->Registry.STAT_TYPE              .get(new Identifier(s)))
+			.registerDeserializer(String.class, StatusEffect.class,       (s,m)->Registry.STATUS_EFFECT          .get(new Identifier(s)))
 			.registerDeserializer(String.class, StructureFeature.class,        (s,m)->Registry.STRUCTURE_FEATURE     .get(new Identifier(s)))
 			.registerDeserializer(String.class, StructurePieceType.class,      (s,m)->Registry.STRUCTURE_PIECE       .get(new Identifier(s)))
 			.registerDeserializer(String.class, StructurePoolElementType.class,(s,m)->Registry.STRUCTURE_POOL_ELEMENT.get(new Identifier(s)))
@@ -120,10 +119,7 @@ public class JanksonFactory {
 			.registerDeserializer(String.class, VillagerType.class,            (s,m)->Registry.VILLAGER_TYPE         .get(new Identifier(s)))
 			;
 		
-		builder
-			.registerSerializer(Activity.class, (o,m)->lookupSerialize(o, Registry.ACTIVITY))
-			
-			;
+		builder.registerSerializer(Activity.class, (o,m)->lookupSerialize(o, Registry.ACTIVITY));
 		
 		
 		
@@ -140,7 +136,7 @@ public class JanksonFactory {
 	}
 	
 	private static <T, U extends T> JsonElement lookupSerialize(T t, Registry<U> registry) {
-		@SuppressWarnings("unchecked") //Widening cast happening because of generic type parameters in the registry class
+		@SuppressWarnings("unchecked") // Widening cast happening because of generic type parameters in the registry class
 		Identifier id = registry.getId((U)t);
 		if (id==null) return JsonNull.INSTANCE;
 		return new JsonPrimitive(id.toString());

@@ -1,6 +1,7 @@
 package io.github.cottonmc.jankson;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import blue.endless.jankson.JsonElement;
@@ -21,7 +22,8 @@ public class BlockAndItemSerializers {
 
 	public static ItemStack getItemStack(JsonObject json, Marshaller m) {
 		String itemIdString = json.get(String.class, "item");
-		Item item = (Item)Registry.ITEM.getOrEmpty(new Identifier(itemIdString)).orElse(Items.AIR);
+		Item item = Registry.ITEM.getOrEmpty(new Identifier(Objects.requireNonNull(itemIdString)))
+				.orElse(Items.AIR);
 		ItemStack stack = new ItemStack(item);
 		if (json.containsKey("count")) {
 			Integer count = json.get(Integer.class, "count");
@@ -33,9 +35,8 @@ public class BlockAndItemSerializers {
 	}
 
 	public static ItemStack getItemStackPrimitive(String s, Marshaller m) {
-		Item item = (Item)Registry.ITEM.getOrEmpty(new Identifier(s)).orElse(Items.AIR);
-		ItemStack stack = new ItemStack(item);
-		return stack;
+		Item item = Registry.ITEM.getOrEmpty(new Identifier(s)).orElse(Items.AIR);
+		return new ItemStack(item);
 	}
 
 	public static JsonElement saveItemStack(ItemStack stack, Marshaller m) {
@@ -60,11 +61,7 @@ public class BlockAndItemSerializers {
 	
 	public static BlockState getBlockStatePrimitive(String blockIdString, Marshaller m) {
 		Optional<Block> blockOpt = Registry.BLOCK.getOrEmpty(new Identifier(blockIdString));
-		if (blockOpt.isPresent()) {
-			return blockOpt.get().getDefaultState();
-		} else {
-			return null;
-		}
+		return blockOpt.map(Block::getDefaultState).orElse(null);
 	}
 	
 	/**
@@ -74,7 +71,8 @@ public class BlockAndItemSerializers {
 	public static BlockState getBlockState(JsonObject json, Marshaller m) {
 		String blockIdString = json.get(String.class, "block");
 		
-		Block block = Registry.BLOCK.getOrEmpty(new Identifier(blockIdString)).orElse(null);
+		Block block = Registry.BLOCK.getOrEmpty(new Identifier(Objects.requireNonNull(blockIdString)))
+				.orElse(null);
 		if (block==null) return null;
 		
 		BlockState state = block.getDefaultState();
@@ -129,7 +127,7 @@ public class BlockAndItemSerializers {
 	}
 	
 	public static <T extends Comparable<T>> BlockState withProperty(BlockState state, Property<T> property, String stringValue) {
-		Optional<T> val = property.getValue(stringValue);
+		Optional<T> val = property.parse(stringValue);
 		if (val.isPresent()) {
 			return state.with(property, val.get());
 		} else {
@@ -138,7 +136,7 @@ public class BlockAndItemSerializers {
 	}
 	
 	public static <T extends Comparable<T>> String getProperty(BlockState state, Property<T> property) {
-		return property.getName(state.get(property));
+		return property.getName();
 	}
 	
 	public static Biome getBiome(String s, Marshaller m) {
