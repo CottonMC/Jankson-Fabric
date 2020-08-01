@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
@@ -47,12 +48,14 @@ public class BlockAndItemSerializers {
 		result.put("count", new JsonPrimitive(stack.getCount()));
 		return result;
 	}
-	
+
+	@Deprecated
 	public static Block getBlockPrimitive(String blockIdString, Marshaller m) {
 		Optional<Block> blockOpt = Registry.BLOCK.getOrEmpty(new Identifier(blockIdString));
 		return blockOpt.orElse(null);
 	}
-	
+
+	@Deprecated
 	public static JsonElement saveBlock(Block block, Marshaller m) {
 		return new JsonPrimitive(Registry.BLOCK.getId(block).toString());
 	}
@@ -140,8 +143,9 @@ public class BlockAndItemSerializers {
 	public static <T extends Comparable<T>> String getProperty(BlockState state, Property<T> property) {
 		return property.name(state.get(property));
 	}
-	
+
+	@Deprecated
 	public static Biome getBiome(String s, Marshaller m) {
-		return Registry.BIOME.get(new Identifier(s));
+		return BuiltinRegistries.BIOME.get(new Identifier(s));
 	}
 }
