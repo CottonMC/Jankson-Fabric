@@ -1,22 +1,26 @@
 package io.github.cottonmc.jankson;
 
-import blue.endless.jankson.*;
-import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.DSL;
-import com.mojang.datafixers.types.DynamicOps;
-import com.mojang.datafixers.types.Type;
-
-import java.util.Map;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
+
+import blue.endless.jankson.JsonArray;
+import blue.endless.jankson.JsonElement;
+import blue.endless.jankson.JsonNull;
+import blue.endless.jankson.JsonObject;
+import blue.endless.jankson.JsonPrimitive;
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapLike;
 
 /**
  * A DynamicOps instance for Jankson. Loosely based on Mojang's JsonOps for Gson.
  */
-public class JanksonOps implements DynamicOps<JsonElement> {
-    public static final JanksonOps INSTANCE = new JanksonOps();
-
-    protected JanksonOps() {}
+public enum JanksonOps implements DynamicOps<JsonElement> {
+    INSTANCE;
 
     @Override
     public JsonElement empty() {
@@ -24,51 +28,8 @@ public class JanksonOps implements DynamicOps<JsonElement> {
     }
 
     @Override
-    public Type<?> getType(JsonElement input) {
-        if (input == null) {
-            throw new NullPointerException("input is null");
-        } else if (input instanceof JsonObject) {
-            return DSL.compoundList(DSL.remainderType(), DSL.remainderType());
-        } else if (input instanceof JsonArray) {
-            return DSL.list(DSL.remainderType());
-        } else if (input instanceof JsonNull) {
-            return DSL.nilType();
-        } else if (input instanceof JsonPrimitive) {
-            Object value = ((JsonPrimitive) input).getValue();
-
-            if (value instanceof String) {
-                return DSL.string();
-            } else if (value instanceof Boolean) {
-                return DSL.bool();
-            } else if (value instanceof Short) {
-                return DSL.shortType();
-            } else if (value instanceof Integer) {
-                return DSL.intType();
-            } else if (value instanceof Long) {
-                return DSL.longType();
-            } else if (value instanceof Float) {
-                return DSL.floatType();
-            } else if (value instanceof Double) {
-                return DSL.doubleType();
-            } else {
-                throw new IllegalArgumentException("Value of JsonPrimitive '" + input + "' has an unknown type: " + value.getClass().getName());
-            }
-        } else {
-            throw new IllegalArgumentException("JsonElement '" + input + "' has an unknown type: " + input.getClass().getName());
-        }
-    }
-
-    @Override
-    public Optional<Number> getNumberValue(JsonElement input) {
-        if (input instanceof JsonPrimitive) {
-            Object value = ((JsonPrimitive) input).getValue();
-            if (value instanceof Number) {
-                return Optional.of((Number) value);
-            } else if (value instanceof Boolean) {
-                return Optional.of((Boolean) value ? 1 : 0);
-            }
-        }
-        return Optional.empty();
+    public JsonElement createString(String value) {
+        return new JsonPrimitive(value);
     }
 
     @Override
@@ -82,136 +43,172 @@ public class JanksonOps implements DynamicOps<JsonElement> {
     }
 
     @Override
-    public Optional<String> getStringValue(JsonElement input) {
-        if (input instanceof JsonPrimitive) {
-            Object value = ((JsonPrimitive) input).getValue();
-            if (value instanceof String) {
-                return Optional.of((String) value);
-            }
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public JsonElement createString(String value) {
-        return new JsonPrimitive(value);
-    }
-
-    @Override
-    public JsonElement mergeInto(JsonElement input, JsonElement value) {
-        if (value instanceof JsonNull) {
-            return value;
-        } else if (input instanceof JsonNull) {
-            throw new IllegalArgumentException("mergeInto called with null input.");
-        }
-
+    public <U> U convertTo(DynamicOps<U> outOps, JsonElement input) {
         if (input instanceof JsonObject) {
-            if (value instanceof JsonObject) {
-                JsonObject result = new JsonObject();
-                result.putAll((JsonObject) input);
-                result.putAll((JsonObject) value);
-                return result;
-            }
-            return input;
+            return this.convertMap(outOps, input);
         } else if (input instanceof JsonArray) {
-            JsonArray result = new JsonArray();
-            result.addAll((JsonArray) input);
-            result.add(value);
-            return result;
-        } else {
-            return input;
+            return this.convertList(outOps, input);
+        } else if (input instanceof JsonNull) {
+            return outOps.empty();
         }
-    }
-
-    @Override
-    public JsonElement mergeInto(JsonElement input, JsonElement key, JsonElement value) {
-        JsonObject output = new JsonObject();
-        if (input instanceof JsonObject) {
-            output.putAll((JsonObject) input);
-        } else if (!(input instanceof JsonNull)) {
-            return input;
+        JsonPrimitive inputPrimitive = (JsonPrimitive) input;
+        if (inputPrimitive.getValue() instanceof String) {
+            return outOps.createString(String.valueOf(inputPrimitive.getValue()));
+        } else if (inputPrimitive.getValue() instanceof Boolean) {
+            return outOps.createBoolean((Boolean) inputPrimitive.getValue());
         }
-
-        output.put(((JsonPrimitive) key).asString(), value);
-        return output;
-    }
-
-    @Override
-    public JsonElement merge(JsonElement first, JsonElement second) {
-        if (first instanceof JsonNull) {
-            return second;
-        } else if (second instanceof JsonNull) {
-            return first;
-        }
-
-        if (first instanceof JsonObject && second instanceof JsonObject) {
-            JsonObject result = new JsonObject();
-            result.putAll((JsonObject) first);
-            result.putAll((JsonObject) second);
-            return result;
-        } else if (first instanceof JsonArray && second instanceof JsonArray) {
-            JsonArray result = new JsonArray();
-            result.addAll((JsonArray) first);
-            result.addAll((JsonArray) second);
-            return result;
-        }
-
-        throw new IllegalArgumentException("Could not merge " + first + " and " + second);
-    }
-
-    @Override
-    public Optional<Map<JsonElement, JsonElement>> getMapValues(JsonElement input) {
-        if (input instanceof JsonObject) {
-            JsonObject inputObj = (JsonObject) input;
-            ImmutableMap.Builder<JsonElement, JsonElement> builder = ImmutableMap.builder();
-            for (Map.Entry<String, JsonElement> entry : inputObj.entrySet()) {
-                builder.put(new JsonPrimitive(entry.getKey()), entry.getValue());
+        BigDecimal numberExact = inputPrimitive.getValue() instanceof BigDecimal ? (BigDecimal) inputPrimitive.getValue() : new BigDecimal(inputPrimitive.getValue().toString());
+        try {
+            long l = numberExact.longValueExact();
+            if ((byte) l == l) {
+                return outOps.createByte((byte) l);
             }
-            return Optional.of(builder.build());
+            if ((short) l == l) {
+                return outOps.createShort((short) l);
+            }
+            if ((int) l == l) {
+                return outOps.createInt((int) l);
+            }
+            return outOps.createLong(l);
+        } catch (ArithmeticException e) {
+            double d = numberExact.doubleValue();
+            if ((float) d == d) {
+                return outOps.createFloat((float) d);
+            }
+            return outOps.createDouble(d);
         }
-        return Optional.empty();
     }
 
     @Override
-    public JsonElement createMap(Map<JsonElement, JsonElement> map) {
-        JsonObject result = new JsonObject();
-        for (Map.Entry<JsonElement, JsonElement> entry : map.entrySet()) {
-            result.put(((JsonPrimitive) entry.getKey()).asString(), entry.getValue());
+    public DataResult<Number> getNumberValue(JsonElement input) {
+        if (input instanceof JsonPrimitive) {
+            if (((JsonPrimitive) input).getValue() instanceof Number) {
+                return DataResult.success((Number) ((JsonPrimitive) input).getValue());
+            } else if (((JsonPrimitive) input).getValue() instanceof Boolean) {
+                return DataResult.success(((Boolean) ((JsonPrimitive) input).getValue()) ? (byte) 1 : (byte) 0);
+            }
         }
-        return result;
+        return DataResult.error("Not a number: " + input);
     }
 
     @Override
-    public Optional<Stream<JsonElement>> getStream(JsonElement input) {
+    public DataResult<Boolean> getBooleanValue(JsonElement input) {
+        if (input instanceof JsonPrimitive) {
+            if (((JsonPrimitive) input).getValue() instanceof Boolean) {
+                return DataResult.success((Boolean) ((JsonPrimitive) input).getValue());
+            } else if (((JsonPrimitive) input).getValue() instanceof Number) {
+                return DynamicOps.super.getBooleanValue(input);
+            }
+        }
+        return DataResult.error("Not a boolean: " + input);
+    }
+
+    @Override
+    public DataResult<String> getStringValue(JsonElement input) {
+        if (input instanceof JsonPrimitive && ((JsonPrimitive) input).getValue() instanceof String) {
+            return DataResult.success(String.valueOf(((JsonPrimitive) input).getValue()));
+        }
+        return DataResult.error("Not a string: " + input);
+    }
+
+    @Override
+    public DataResult<JsonElement> mergeToList(JsonElement list, JsonElement value) {
+        if (!(list instanceof JsonArray)) {
+            return DataResult.error("mergeToList not called with a list: " + list, list);
+        }
+
+        JsonArray array = new JsonArray();
+        if (list != this.empty()) {
+            array.addAll((JsonArray) list);
+        }
+        array.add(value);
+        return DataResult.success(array);
+    }
+
+    @Override
+    public DataResult<JsonElement> mergeToMap(JsonElement map, JsonElement key, JsonElement value) {
+        if (!(map instanceof JsonObject)) {
+            return DataResult.error("mergeToMap not called with a map: " + map, map);
+        }
+        if (!(key instanceof JsonPrimitive) || !(((JsonPrimitive) key).getValue() instanceof String)) {
+            return DataResult.error("Key is not a string: " + key, map);
+        }
+
+        JsonObject output = new JsonObject();
+        if (map != this.empty()) {
+            ((JsonObject) map).forEach(output::put);
+        }
+        output.put(String.valueOf(((JsonPrimitive) key).getValue()), value);
+
+        return DataResult.success(output);
+    }
+
+    @Override
+    public DataResult<JsonElement> mergeToMap(JsonElement map, MapLike<JsonElement> values) {
+        if (!(map instanceof JsonObject)) {
+            return DataResult.error("mergeToMap not called with a map: " + map, map);
+        }
+
+        JsonObject newMap = new JsonObject();
+        if (map != this.empty()) {
+            ((JsonObject) map).forEach(newMap::put);
+        }
+
+        List<JsonElement> missed = Lists.newArrayList();
+
+        values.entries().forEach(entry -> {
+            JsonElement key = entry.getFirst();
+            if (!(key instanceof JsonPrimitive) || !(((JsonPrimitive) key).getValue() instanceof String)) {
+                missed.add(key);
+                return;
+            }
+            newMap.put(String.valueOf(((JsonPrimitive) key).getValue()), entry.getSecond());
+        });
+
+        if (!missed.isEmpty()) {
+            return DataResult.error("Keys are not strings: " + missed, newMap);
+        }
+
+        return DataResult.success(newMap);
+    }
+
+    @Override
+    public DataResult<Stream<Pair<JsonElement, JsonElement>>> getMapValues(JsonElement input) {
+        if (!(input instanceof JsonObject)) {
+            return DataResult.error("Not a json object: " + input);
+        }
+        return DataResult.success((((JsonObject) input).entrySet().stream().map(entry -> Pair.of(new JsonPrimitive(entry.getKey()), entry.getValue() instanceof JsonNull ? null : entry.getValue()))));
+    }
+
+    @Override
+    public JsonElement createMap(Stream<Pair<JsonElement, JsonElement>> pairStream) {
+        JsonObject jsonObject = new JsonObject();
+        pairStream.forEach(p -> jsonObject.put(p.getFirst().toJson(), p.getSecond()));
+        return jsonObject;
+    }
+
+    @Override
+    public DataResult<Stream<JsonElement>> getStream(JsonElement input) {
         if (input instanceof JsonArray) {
-            return Optional.of(((JsonArray) input).stream());
+            return DataResult.success(((JsonArray) input).stream().map(e -> e instanceof JsonNull ? null : e));
         }
-        return Optional.empty();
+        return DataResult.error("Not a json array: " + input);
     }
 
     @Override
     public JsonElement createList(Stream<JsonElement> input) {
-        JsonArray result = new JsonArray();
-        input.forEach(result::add);
-        return result;
+        JsonArray array = new JsonArray();
+        input.forEach(array::add);
+        return array;
     }
 
     @Override
     public JsonElement remove(JsonElement input, String key) {
         if (input instanceof JsonObject) {
             JsonObject result = new JsonObject();
-            for (Map.Entry<String, JsonElement> entry : ((JsonObject) input).entrySet()) {
-                if (!entry.getKey().equals(key)) {
-                    result.put(entry.getKey(), entry.getValue());
-                }
-            }
+            ((JsonObject) input).entrySet().stream().filter(entry -> !Objects.equals(entry.getKey(), key)).forEach(entry -> result.put(entry.getKey(), entry.getValue()));
             return result;
         }
         return input;
-    }
-
-    @Override
-    public String toString() {
-        return "Jankson";
     }
 }
