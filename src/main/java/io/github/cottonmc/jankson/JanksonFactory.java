@@ -1,7 +1,5 @@
 package io.github.cottonmc.jankson;
 
-import com.mojang.serialization.Codec;
-
 import blue.endless.jankson.Jankson;
 import blue.endless.jankson.JsonElement;
 import blue.endless.jankson.JsonNull;
@@ -98,10 +96,6 @@ public class JanksonFactory {
 		register(builder, BlockStateProviderType.class,     Registry.BLOCK_STATE_PROVIDER_TYPE);
 		register(builder, Carver.class,                     Registry.CARVER);
 		register(builder, ChunkStatus.class,                Registry.CHUNK_STATUS);
-		register(builder, Codec.class,                      Registry.BIOME_SOURCE);
-		register(builder, Codec.class,                      Registry.CHUNK_GENERATOR);
-		register(builder, Codec.class,                      Registry.MATERIAL_CONDITION);
-		register(builder, Codec.class,                      Registry.MATERIAL_RULE);
 		register(builder, Decorator.class,                  Registry.DECORATOR);
 		register(builder, Enchantment.class,                Registry.ENCHANTMENT);
 		register(builder, EntityAttribute.class,            Registry.ATTRIBUTE);
@@ -113,7 +107,6 @@ public class JanksonFactory {
 		register(builder, FoliagePlacerType.class,          Registry.FOLIAGE_PLACER_TYPE);
 		register(builder, GameEvent.class,                  Registry.GAME_EVENT);
 		register(builder, HeightProviderType.class,         Registry.HEIGHT_PROVIDER_TYPE);
-		register(builder, Identifier.class,                 Registry.CUSTOM_STAT);
 		register(builder, IntProviderType.class,            Registry.INT_PROVIDER_TYPE);
 		register(builder, Item.class,                       Registry.ITEM);
 		register(builder, LootConditionType.class,          Registry.LOOT_CONDITION_TYPE);

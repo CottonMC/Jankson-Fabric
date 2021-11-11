@@ -24,7 +24,7 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	
-	implementation "blue.endless:jankson:1.2.1"
+	api "blue.endless:jankson:1.2.1"
 	include "blue.endless:jankson:1.2.1"
 }
 
