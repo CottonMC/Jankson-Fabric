@@ -1,7 +1,6 @@
 plugins {
 	id 'fabric-loom' version '0.10-SNAPSHOT'
 	id 'maven-publish'
-	id "com.jfrog.artifactory" version "4.9.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_16
@@ -54,8 +53,7 @@ jar {
 publishing {
 	publications {
 		maven(MavenPublication) {
-			artifact ("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.version}.jar") { //release jar - file location not provided anywhere in loom
-				classifier null
+			artifact(remapJar) {
 				builtBy remapJar
 			}
 
@@ -67,32 +65,16 @@ publishing {
 
 	// select the repositories you want to publish to
 	repositories {
-		// uncomment to publish to the local maven
-		// mavenLocal()
-	}
-}
-
-artifactory {
-	if (project.hasProperty("artifactoryUsername")) {
-		contextUrl = 'http://server.bbkr.space:8081/artifactory/'
-		publish {
-			repository {
-				if (version.contains("SNAPSHOT")) {
-					repoKey = "libs-snapshot"
-				} else {
-					repoKey = "libs-release"
+		if (project.hasProperty("artifactoryUsername")) {
+			maven {
+				url = "https://server.bbkr.space/artifactory/libs-release/"
+				credentials {
+					username = artifactoryUsername
+					password = artifactoryPassword
 				}
-				username = artifactoryUsername
-				password = artifactoryPassword
 			}
-			defaults {
-				publications('maven')
-
-				publishArtifacts = true
-				publishPom = true
-			}
+		} else {
+			println "Cannot configure artifactory; please define ext.artifactoryUsername and ext.artifactoryPassword before running publish"
 		}
-	} else {
-		println "Cannot configure artifactory; please define ext.artifactoryUsername and ext.artifactoryPassword before running artifactoryPublish"
 	}
 }
