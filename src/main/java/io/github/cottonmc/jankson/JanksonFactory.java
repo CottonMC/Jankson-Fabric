@@ -5,7 +5,6 @@ import blue.endless.jankson.JsonElement;
 import blue.endless.jankson.JsonNull;
 import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
-import net.minecraft.class_6798;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -58,12 +57,13 @@ import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.gen.feature.size.FeatureSizeType;
 import net.minecraft.world.gen.foliage.FoliagePlacerType;
 import net.minecraft.world.gen.heightprovider.HeightProviderType;
+import net.minecraft.world.gen.placementmodifier.PlacementModifierType;
 import net.minecraft.world.gen.stateprovider.BlockStateProviderType;
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
@@ -96,7 +96,7 @@ public class JanksonFactory {
 		register(builder, BlockStateProviderType.class,     Registry.BLOCK_STATE_PROVIDER_TYPE);
 		register(builder, Carver.class,                     Registry.CARVER);
 		register(builder, ChunkStatus.class,                Registry.CHUNK_STATUS);
-		register(builder, class_6798.class,                 Registry.field_35760);
+		register(builder, PlacementModifierType.class,      Registry.PLACEMENT_MODIFIER_TYPE);
 		register(builder, Enchantment.class,                Registry.ENCHANTMENT);
 		register(builder, EntityAttribute.class,            Registry.ATTRIBUTE);
 		register(builder, EntityType.class,                 Registry.ENTITY_TYPE);
@@ -131,7 +131,6 @@ public class JanksonFactory {
 		register(builder, SoundEvent.class,                 Registry.SOUND_EVENT);
 		register(builder, StatType.class,                   Registry.STAT_TYPE);
 		register(builder, StatusEffect.class,               Registry.STATUS_EFFECT);
-		register(builder, StructureFeature.class,           Registry.STRUCTURE_FEATURE);
 		register(builder, StructurePieceType.class,         Registry.STRUCTURE_PIECE);
 		register(builder, StructurePoolElementType.class,   Registry.STRUCTURE_POOL_ELEMENT);
 		register(builder, StructureProcessorType.class,     Registry.STRUCTURE_PROCESSOR);
@@ -143,7 +142,7 @@ public class JanksonFactory {
 		
 		register(builder, ConfiguredCarver.class,           BuiltinRegistries.CONFIGURED_CARVER);
 		register(builder, ConfiguredFeature.class,          BuiltinRegistries.CONFIGURED_FEATURE);
-		register(builder, ConfiguredStructureFeature.class, BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE);
+		register(builder, StructureFeature.class,           BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE);
 		register(builder, StructureProcessorList.class,     BuiltinRegistries.STRUCTURE_PROCESSOR_LIST);
 		register(builder, StructurePool.class,              BuiltinRegistries.STRUCTURE_POOL);
 		register(builder, Biome.class,                      BuiltinRegistries.BIOME);
