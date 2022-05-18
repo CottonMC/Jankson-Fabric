@@ -1,10 +1,5 @@
 package io.github.cottonmc.jankson;
 
-import blue.endless.jankson.Jankson;
-import blue.endless.jankson.JsonElement;
-import blue.endless.jankson.JsonNull;
-import blue.endless.jankson.JsonObject;
-import blue.endless.jankson.JsonPrimitive;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
@@ -15,7 +10,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.Schedule;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.decoration.painting.PaintingMotive;
+import net.minecraft.entity.decoration.painting.PaintingVariant;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -26,6 +21,7 @@ import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.nbt.LootNbtProviderType;
 import net.minecraft.loot.provider.number.LootNumberProviderType;
 import net.minecraft.loot.provider.score.LootScoreProviderType;
+import net.minecraft.network.MessageType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.potion.Potion;
 import net.minecraft.recipe.RecipeSerializer;
@@ -34,6 +30,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.stat.StatType;
 import net.minecraft.structure.StructurePieceType;
+import net.minecraft.structure.StructureSet;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolElementType;
 import net.minecraft.structure.processor.StructureProcessorList;
@@ -52,22 +49,30 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.event.PositionSourceType;
+import net.minecraft.world.gen.FlatLevelGeneratorPreset;
+import net.minecraft.world.gen.WorldPreset;
 import net.minecraft.world.gen.blockpredicate.BlockPredicateType;
 import net.minecraft.world.gen.carver.Carver;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
+import net.minecraft.world.gen.densityfunction.DensityFunction;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.size.FeatureSizeType;
 import net.minecraft.world.gen.foliage.FoliagePlacerType;
 import net.minecraft.world.gen.heightprovider.HeightProviderType;
 import net.minecraft.world.gen.placementmodifier.PlacementModifierType;
 import net.minecraft.world.gen.stateprovider.BlockStateProviderType;
+import net.minecraft.world.gen.structure.StructureType;
 import net.minecraft.world.gen.treedecorator.TreeDecoratorType;
 import net.minecraft.world.gen.trunk.TrunkPlacerType;
 import net.minecraft.world.poi.PointOfInterestType;
+
+import blue.endless.jankson.Jankson;
+import blue.endless.jankson.JsonElement;
+import blue.endless.jankson.JsonNull;
+import blue.endless.jankson.JsonObject;
+import blue.endless.jankson.JsonPrimitive;
 
 public class JanksonFactory {
 	public static Jankson.Builder builder() {
@@ -116,7 +121,7 @@ public class JanksonFactory {
 		register(builder, LootPoolEntryType.class,          Registry.LOOT_POOL_ENTRY_TYPE);
 		register(builder, LootScoreProviderType.class,      Registry.LOOT_SCORE_PROVIDER_TYPE);
 		register(builder, MemoryModuleType.class,           Registry.MEMORY_MODULE_TYPE);
-		register(builder, PaintingMotive.class,             Registry.PAINTING_MOTIVE);
+		register(builder, PaintingVariant.class,            Registry.PAINTING_VARIANT);
 		register(builder, ParticleType.class,               Registry.PARTICLE_TYPE);
 		register(builder, PointOfInterestType.class,        Registry.POINT_OF_INTEREST_TYPE);
 		register(builder, PositionSourceType.class,         Registry.POSITION_SOURCE_TYPE);
@@ -141,13 +146,18 @@ public class JanksonFactory {
 		register(builder, Registry.class,                   Registry.REGISTRIES);
 		
 		register(builder, ConfiguredCarver.class,           BuiltinRegistries.CONFIGURED_CARVER);
-		register(builder, ConfiguredFeature.class,          BuiltinRegistries.CONFIGURED_FEATURE);
-		register(builder, StructureFeature.class,           BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE);
+		register(builder, PlacedFeature.class,       	   BuiltinRegistries.PLACED_FEATURE);
+		register(builder, StructureType.class,    		   BuiltinRegistries.STRUCTURE);
+		register(builder, StructureSet.class,          	   BuiltinRegistries.STRUCTURE_SET);
 		register(builder, StructureProcessorList.class,     BuiltinRegistries.STRUCTURE_PROCESSOR_LIST);
 		register(builder, StructurePool.class,              BuiltinRegistries.STRUCTURE_POOL);
 		register(builder, Biome.class,                      BuiltinRegistries.BIOME);
-		register(builder, ChunkGeneratorSettings.class,     BuiltinRegistries.CHUNK_GENERATOR_SETTINGS);
 		register(builder, NoiseParameters.class,            BuiltinRegistries.NOISE_PARAMETERS);
+		register(builder, DensityFunction.class,            BuiltinRegistries.DENSITY_FUNCTION);
+		register(builder, ChunkGeneratorSettings.class,     BuiltinRegistries.CHUNK_GENERATOR_SETTINGS);
+		register(builder, WorldPreset.class,     		   BuiltinRegistries.WORLD_PRESET);
+		register(builder, FlatLevelGeneratorPreset.class,   BuiltinRegistries.FLAT_LEVEL_GENERATOR_PRESET);
+		register(builder, MessageType.class,     		   BuiltinRegistries.MESSAGE_TYPE);
 		
 		return builder;
 	}
