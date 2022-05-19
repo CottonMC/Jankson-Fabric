@@ -146,18 +146,18 @@ public class JanksonFactory {
 		register(builder, Registry.class,                   Registry.REGISTRIES);
 		
 		register(builder, ConfiguredCarver.class,           BuiltinRegistries.CONFIGURED_CARVER);
-		register(builder, PlacedFeature.class,       	   BuiltinRegistries.PLACED_FEATURE);
-		register(builder, StructureType.class,    		   BuiltinRegistries.STRUCTURE);
-		register(builder, StructureSet.class,          	   BuiltinRegistries.STRUCTURE_SET);
+		register(builder, PlacedFeature.class,       	    BuiltinRegistries.PLACED_FEATURE);
+		register(builder, StructureType.class,              BuiltinRegistries.STRUCTURE);
+		register(builder, StructureSet.class,          	    BuiltinRegistries.STRUCTURE_SET);
 		register(builder, StructureProcessorList.class,     BuiltinRegistries.STRUCTURE_PROCESSOR_LIST);
 		register(builder, StructurePool.class,              BuiltinRegistries.STRUCTURE_POOL);
 		register(builder, Biome.class,                      BuiltinRegistries.BIOME);
 		register(builder, NoiseParameters.class,            BuiltinRegistries.NOISE_PARAMETERS);
 		register(builder, DensityFunction.class,            BuiltinRegistries.DENSITY_FUNCTION);
 		register(builder, ChunkGeneratorSettings.class,     BuiltinRegistries.CHUNK_GENERATOR_SETTINGS);
-		register(builder, WorldPreset.class,     		   BuiltinRegistries.WORLD_PRESET);
+		register(builder, WorldPreset.class,                BuiltinRegistries.WORLD_PRESET);
 		register(builder, FlatLevelGeneratorPreset.class,   BuiltinRegistries.FLAT_LEVEL_GENERATOR_PRESET);
-		register(builder, MessageType.class,     		   BuiltinRegistries.MESSAGE_TYPE);
+		register(builder, MessageType.class,                BuiltinRegistries.MESSAGE_TYPE);
 		
 		return builder;
 	}
