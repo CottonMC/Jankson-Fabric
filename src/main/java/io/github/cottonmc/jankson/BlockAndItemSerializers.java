@@ -12,17 +12,15 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 
 public class BlockAndItemSerializers {
 
 	public static ItemStack getItemStack(JsonObject json, Marshaller m) {
 		String itemIdString = json.get(String.class, "item");
-		Item item = Registry.ITEM.getOrEmpty(new Identifier(itemIdString)).orElse(Items.AIR);
+		Item item = Registries.ITEM.getOrEmpty(new Identifier(itemIdString)).orElse(Items.AIR);
 		ItemStack stack = new ItemStack(item);
 		if (json.containsKey("count")) {
 			Integer count = json.get(Integer.class, "count");
@@ -34,35 +32,35 @@ public class BlockAndItemSerializers {
 	}
 
 	public static ItemStack getItemStackPrimitive(String s, Marshaller m) {
-		Item item = Registry.ITEM.getOrEmpty(new Identifier(s)).orElse(Items.AIR);
+		Item item = Registries.ITEM.getOrEmpty(new Identifier(s)).orElse(Items.AIR);
 		ItemStack stack = new ItemStack(item);
 		return stack;
 	}
 
 	public static JsonElement saveItemStack(ItemStack stack, Marshaller m) {
-		JsonPrimitive id = new JsonPrimitive(Registry.ITEM.getId(stack.getItem()).toString());
+		JsonPrimitive id = new JsonPrimitive(Registries.ITEM.getId(stack.getItem()).toString());
 		if (stack.getCount()==1) return id;
 	
 		JsonObject result = new JsonObject();
-		result.put("item", new JsonPrimitive(Registry.ITEM.getId(stack.getItem()).toString()));
+		result.put("item", new JsonPrimitive(Registries.ITEM.getId(stack.getItem()).toString()));
 		result.put("count", new JsonPrimitive(stack.getCount()));
 		return result;
 	}
 
 	@Deprecated
 	public static Block getBlockPrimitive(String blockIdString, Marshaller m) {
-		Optional<Block> blockOpt = Registry.BLOCK.getOrEmpty(new Identifier(blockIdString));
+		Optional<Block> blockOpt = Registries.BLOCK.getOrEmpty(new Identifier(blockIdString));
 		return blockOpt.orElse(null);
 	}
 
 	@Deprecated
 	public static JsonElement saveBlock(Block block, Marshaller m) {
-		return new JsonPrimitive(Registry.BLOCK.getId(block).toString());
+		return new JsonPrimitive(Registries.BLOCK.getId(block).toString());
 	}
 	
 	
 	public static BlockState getBlockStatePrimitive(String blockIdString, Marshaller m) {
-		Optional<Block> blockOpt = Registry.BLOCK.getOrEmpty(new Identifier(blockIdString));
+		Optional<Block> blockOpt = Registries.BLOCK.getOrEmpty(new Identifier(blockIdString));
 		if (blockOpt.isPresent()) {
 			return blockOpt.get().getDefaultState();
 		} else {
@@ -77,7 +75,7 @@ public class BlockAndItemSerializers {
 	public static BlockState getBlockState(JsonObject json, Marshaller m) {
 		String blockIdString = json.get(String.class, "block");
 		
-		Block block = Registry.BLOCK.getOrEmpty(new Identifier(blockIdString)).orElse(null);
+		Block block = Registries.BLOCK.getOrEmpty(new Identifier(blockIdString)).orElse(null);
 		if (block==null) return null;
 		
 		BlockState state = block.getDefaultState();
@@ -105,11 +103,11 @@ public class BlockAndItemSerializers {
 		
 		if (state.equals(defaultState)) {
 			//Use a String for the blockID only
-			return new JsonPrimitive( Registry.BLOCK.getId(state.getBlock()).toString() );
+			return new JsonPrimitive( Registries.BLOCK.getId(state.getBlock()).toString() );
 			
 		} else {
 			JsonObject result = new JsonObject();
-			result.put("block", new JsonPrimitive( Registry.BLOCK.getId(state.getBlock()).toString() ));
+			result.put("block", new JsonPrimitive( Registries.BLOCK.getId(state.getBlock()).toString() ));
 			JsonObject stateObject = result;
 			for(Property<?> property : state.getProperties()) {
 				String key = property.getName();
@@ -142,10 +140,5 @@ public class BlockAndItemSerializers {
 	
 	public static <T extends Comparable<T>> String getProperty(BlockState state, Property<T> property) {
 		return property.name(state.get(property));
-	}
-
-	@Deprecated
-	public static Biome getBiome(String s, Marshaller m) {
-		return BuiltinRegistries.BIOME.get(new Identifier(s));
 	}
 }
