@@ -105,7 +105,7 @@ public class JanksonFactory {
 		register(builder, EntityType.class,                 Registries.ENTITY_TYPE);
 		register(builder, Feature.class,                    Registries.FEATURE);
 		register(builder, FeatureSizeType.class,            Registries.FEATURE_SIZE_TYPE);
-		register(builder, FloatProviderType.class,          Registries.FLOAT_PROIDER_TYPE);
+		register(builder, FloatProviderType.class,          Registries.FLOAT_PROVIDER_TYPE);
 		register(builder, Fluid.class,                      Registries.FLUID);
 		register(builder, FoliagePlacerType.class,          Registries.FOLIAGE_PLACER_TYPE);
 		register(builder, FrogVariant.class,                Registries.FROG_VARIANT);
@@ -130,7 +130,7 @@ public class JanksonFactory {
 		register(builder, Potion.class,                     Registries.POTION);
 		register(builder, RecipeSerializer.class,           Registries.RECIPE_SERIALIZER);
 		register(builder, RecipeType.class,                 Registries.RECIPE_TYPE);
-		register(builder, RootPlacerType.class,             Registries.ROOT_PLAYER_TYPE);
+		register(builder, RootPlacerType.class,             Registries.ROOT_PLACER_TYPE);
 		register(builder, RuleTestType.class,               Registries.RULE_TEST);
 		register(builder, Schedule.class,                   Registries.SCHEDULE);
 		register(builder, ScreenHandlerType.class,          Registries.SCREEN_HANDLER);
