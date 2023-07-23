@@ -20,8 +20,8 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	
-	api "blue.endless:jankson:1.2.2"
-	include "blue.endless:jankson:1.2.2"
+	api "blue.endless:jankson:1.2.3"
+	include "blue.endless:jankson:1.2.3"
 }
 
 processResources {
