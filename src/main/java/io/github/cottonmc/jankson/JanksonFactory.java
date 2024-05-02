@@ -2,7 +2,6 @@ package io.github.cottonmc.jankson;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.enchantment.Enchantment;
@@ -94,7 +93,6 @@ public class JanksonFactory {
 		//Note: specifically excludes dynamic registries since we can't have static access to them.
 		register(builder, Activity.class,                    Registries.ACTIVITY);
 		register(builder, ArgumentSerializer.class,          Registries.COMMAND_ARGUMENT_TYPE);
-		register(builder, BannerPattern.class,               Registries.BANNER_PATTERN);
 		register(builder, Block.class,                       Registries.BLOCK);
 		register(builder, BlockEntityType.class,             Registries.BLOCK_ENTITY_TYPE);
 		register(builder, BlockPredicateType.class,          Registries.BLOCK_PREDICATE_TYPE);
