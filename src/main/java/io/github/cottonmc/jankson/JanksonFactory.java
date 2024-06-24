@@ -5,15 +5,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
-import net.minecraft.component.DataComponentType;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.Schedule;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.decoration.painting.PaintingVariant;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.passive.CatVariant;
 import net.minecraft.entity.passive.FrogVariant;
@@ -91,7 +88,7 @@ public class JanksonFactory {
 			.registerSerializer(BlockState.class, BlockAndItemSerializers::saveBlockState);
 		
 		builder
-			.registerDeserializer(String.class, Identifier.class,         (s,m)->new Identifier(s))
+			.registerDeserializer(String.class, Identifier.class, (s, m) -> Identifier.of(s))
 			.registerSerializer(Identifier.class, (i,m)->new JsonPrimitive(i.toString()))
 			;
 		
@@ -108,8 +105,6 @@ public class JanksonFactory {
 		register(builder, CatVariant.class,                  Registries.CAT_VARIANT);
 		register(builder, ChunkStatus.class,                 Registries.CHUNK_STATUS);
 		register(builder, Criterion.class,                   Registries.CRITERION);
-		register(builder, DataComponentType.class,           Registries.DATA_COMPONENT_TYPE);
-		register(builder, Enchantment.class,                 Registries.ENCHANTMENT);
 		register(builder, EntityAttribute.class,             Registries.ATTRIBUTE);
 		register(builder, EntityType.class,                  Registries.ENTITY_TYPE);
 		register(builder, Feature.class,                     Registries.FEATURE);
@@ -134,7 +129,6 @@ public class JanksonFactory {
 		register(builder, MapDecorationType.class,           Registries.MAP_DECORATION_TYPE);
 		register(builder, MemoryModuleType.class,            Registries.MEMORY_MODULE_TYPE);
 		register(builder, NumberFormatType.class,            Registries.NUMBER_FORMAT_TYPE);
-		register(builder, PaintingVariant.class,             Registries.PAINTING_VARIANT);
 		register(builder, ParticleType.class,                Registries.PARTICLE_TYPE);
 		register(builder, PlacementModifierType.class,       Registries.PLACEMENT_MODIFIER_TYPE);
 		register(builder, PointOfInterestType.class,         Registries.POINT_OF_INTEREST_TYPE);
@@ -172,7 +166,7 @@ public class JanksonFactory {
 	}
 	
 	private static <T> T lookupDeserialize(String s, Registry<T> registry) {
-		return registry.get(new Identifier(s));
+		return registry.get(Identifier.of(s));
 	}
 	
 	private static <T, U extends T> JsonElement lookupSerialize(T t, Registry<U> registry) {
