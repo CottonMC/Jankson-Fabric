@@ -17,7 +17,6 @@ import net.minecraft.entity.passive.FrogVariant;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.consume.ConsumeEffect;
 import net.minecraft.item.map.MapDecorationType;
 import net.minecraft.loot.condition.LootConditionType;
@@ -78,11 +77,6 @@ import blue.endless.jankson.JsonPrimitive;
 public class JanksonFactory {
 	public static Jankson.Builder builder() {
 		Jankson.Builder builder = Jankson.builder();
-		
-		builder
-			.registerDeserializer(String.class, ItemStack.class, BlockAndItemSerializers::getItemStackPrimitive)
-			.registerDeserializer(JsonObject.class, ItemStack.class, BlockAndItemSerializers::getItemStack)
-			.registerSerializer(ItemStack.class, BlockAndItemSerializers::saveItemStack);
 				
 		builder
 			.registerDeserializer(String.class, BlockState.class, BlockAndItemSerializers::getBlockStatePrimitive)
