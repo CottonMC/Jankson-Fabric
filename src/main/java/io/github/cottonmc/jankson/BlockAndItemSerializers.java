@@ -25,7 +25,7 @@ public class BlockAndItemSerializers {
 	@Deprecated(forRemoval = true)
 	public static ItemStack getItemStack(JsonObject json, Marshaller m) {
 		String itemIdString = json.get(String.class, "item");
-		Item item = Registries.ITEM.getOrEmpty(Identifier.of(itemIdString)).orElse(Items.AIR);
+		Item item = Registries.ITEM.getOptionalValue(Identifier.of(itemIdString)).orElse(Items.AIR);
 		ItemStack stack = new ItemStack(item);
 		if (json.containsKey("count")) {
 			Integer count = json.get(Integer.class, "count");
@@ -46,7 +46,7 @@ public class BlockAndItemSerializers {
 	 */
 	@Deprecated(forRemoval = true)
 	public static ItemStack getItemStackPrimitive(String s, Marshaller m) {
-		Item item = Registries.ITEM.getOrEmpty(Identifier.of(s)).orElse(Items.AIR);
+		Item item = Registries.ITEM.getOptionalValue(Identifier.of(s)).orElse(Items.AIR);
 		ItemStack stack = new ItemStack(item);
 		return stack;
 	}
@@ -60,7 +60,7 @@ public class BlockAndItemSerializers {
 	public static JsonElement saveItemStack(ItemStack stack, Marshaller m) {
 		JsonPrimitive id = new JsonPrimitive(Registries.ITEM.getId(stack.getItem()).toString());
 		if (stack.getCount()==1) return id;
-	
+
 		JsonObject result = new JsonObject();
 		result.put("item", new JsonPrimitive(Registries.ITEM.getId(stack.getItem()).toString()));
 		result.put("count", new JsonPrimitive(stack.getCount()));
@@ -73,7 +73,7 @@ public class BlockAndItemSerializers {
 	 */
 	@Deprecated(forRemoval = true)
 	public static Block getBlockPrimitive(String blockIdString, Marshaller m) {
-		Optional<Block> blockOpt = Registries.BLOCK.getOrEmpty(Identifier.of(blockIdString));
+		Optional<Block> blockOpt = Registries.BLOCK.getOptionalValue(Identifier.of(blockIdString));
 		return blockOpt.orElse(null);
 	}
 
@@ -85,10 +85,10 @@ public class BlockAndItemSerializers {
 	public static JsonElement saveBlock(Block block, Marshaller m) {
 		return new JsonPrimitive(Registries.BLOCK.getId(block).toString());
 	}
-	
-	
+
+
 	public static BlockState getBlockStatePrimitive(String blockIdString, Marshaller m) {
-		Optional<Block> blockOpt = Registries.BLOCK.getOrEmpty(Identifier.of(blockIdString));
+		Optional<Block> blockOpt = Registries.BLOCK.getOptionalValue(Identifier.of(blockIdString));
 		if (blockOpt.isPresent()) {
 			return blockOpt.get().getDefaultState();
 		} else {
@@ -103,7 +103,7 @@ public class BlockAndItemSerializers {
 	public static BlockState getBlockState(JsonObject json, Marshaller m) {
 		String blockIdString = json.get(String.class, "block");
 		
-		Block block = Registries.BLOCK.getOrEmpty(Identifier.of(blockIdString)).orElse(null);
+		Block block = Registries.BLOCK.getOptionalValue(Identifier.of(blockIdString)).orElse(null);
 		if (block==null) return null;
 		
 		BlockState state = block.getDefaultState();

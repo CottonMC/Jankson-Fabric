@@ -15,11 +15,10 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.passive.CatVariant;
 import net.minecraft.entity.passive.FrogVariant;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.Instrument;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.consume.ConsumeEffect;
 import net.minecraft.item.map.MapDecorationType;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.entry.LootPoolEntryType;
@@ -32,6 +31,9 @@ import net.minecraft.potion.Potion;
 import net.minecraft.predicate.item.ItemSubPredicate;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.recipe.book.RecipeBookCategory;
+import net.minecraft.recipe.display.RecipeDisplay;
+import net.minecraft.recipe.display.SlotDisplay;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.scoreboard.number.NumberFormatType;
@@ -96,7 +98,6 @@ public class JanksonFactory {
 		//Note: specifically excludes dynamic registries since we can't have static access to them.
 		register(builder, Activity.class,                    Registries.ACTIVITY);
 		register(builder, ArgumentSerializer.class,          Registries.COMMAND_ARGUMENT_TYPE);
-		register(builder, ArmorMaterial.class,               Registries.ARMOR_MATERIAL);
 		register(builder, Block.class,                       Registries.BLOCK);
 		register(builder, BlockEntityType.class,             Registries.BLOCK_ENTITY_TYPE);
 		register(builder, BlockPredicateType.class,          Registries.BLOCK_PREDICATE_TYPE);
@@ -104,6 +105,7 @@ public class JanksonFactory {
 		register(builder, Carver.class,                      Registries.CARVER);
 		register(builder, CatVariant.class,                  Registries.CAT_VARIANT);
 		register(builder, ChunkStatus.class,                 Registries.CHUNK_STATUS);
+		register(builder, ConsumeEffect.Type.class,          Registries.CONSUME_EFFECT_TYPE);
 		register(builder, Criterion.class,                   Registries.CRITERION);
 		register(builder, EntityAttribute.class,             Registries.ATTRIBUTE);
 		register(builder, EntityType.class,                  Registries.ENTITY_TYPE);
@@ -115,7 +117,6 @@ public class JanksonFactory {
 		register(builder, FrogVariant.class,                 Registries.FROG_VARIANT);
 		register(builder, GameEvent.class,                   Registries.GAME_EVENT);
 		register(builder, HeightProviderType.class,          Registries.HEIGHT_PROVIDER_TYPE);
-		register(builder, Instrument.class,                  Registries.INSTRUMENT);
 		register(builder, IntProviderType.class,             Registries.INT_PROVIDER_TYPE);
 		register(builder, Item.class,                        Registries.ITEM);
 		register(builder, ItemGroup.class,                   Registries.ITEM_GROUP);
@@ -135,6 +136,8 @@ public class JanksonFactory {
 		register(builder, PositionSourceType.class,          Registries.POSITION_SOURCE_TYPE);
 		register(builder, PosRuleTestType.class,             Registries.POS_RULE_TEST);
 		register(builder, Potion.class,                      Registries.POTION);
+		register(builder, RecipeBookCategory.class,          Registries.RECIPE_BOOK_CATEGORY);
+		register(builder, RecipeDisplay.Serializer.class,    Registries.RECIPE_DISPLAY);
 		register(builder, RecipeSerializer.class,            Registries.RECIPE_SERIALIZER);
 		register(builder, RecipeType.class,                  Registries.RECIPE_TYPE);
 		register(builder, RootPlacerType.class,              Registries.ROOT_PLACER_TYPE);
@@ -143,6 +146,7 @@ public class JanksonFactory {
 		register(builder, Schedule.class,                    Registries.SCHEDULE);
 		register(builder, ScreenHandlerType.class,           Registries.SCREEN_HANDLER);
 		register(builder, SensorType.class,                  Registries.SENSOR_TYPE);
+		register(builder, SlotDisplay.Serializer.class,      Registries.SLOT_DISPLAY);
 		register(builder, SoundEvent.class,                  Registries.SOUND_EVENT);
 		register(builder, StatType.class,                    Registries.STAT_TYPE);
 		register(builder, StatusEffect.class,                Registries.STATUS_EFFECT);
