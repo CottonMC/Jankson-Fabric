@@ -12,8 +12,6 @@ import net.minecraft.entity.ai.brain.Schedule;
 import net.minecraft.entity.ai.brain.sensor.SensorType;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.passive.CatVariant;
-import net.minecraft.entity.passive.FrogVariant;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -27,7 +25,6 @@ import net.minecraft.loot.provider.number.LootNumberProviderType;
 import net.minecraft.loot.provider.score.LootScoreProviderType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.potion.Potion;
-import net.minecraft.predicate.item.ItemSubPredicate;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.book.RecipeBookCategory;
@@ -37,6 +34,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.scoreboard.number.NumberFormatType;
 import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.stat.StatType;
 import net.minecraft.structure.StructurePieceType;
@@ -87,7 +85,7 @@ public class JanksonFactory {
 			.registerDeserializer(String.class, Identifier.class, (s, m) -> Identifier.of(s))
 			.registerSerializer(Identifier.class, (i,m)->new JsonPrimitive(i.toString()))
 			;
-		
+
 		//All the things you could potentially specify with just a registry ID
 		//Note: specifically excludes dynamic registries since we can't have static access to them.
 		register(builder, Activity.class,                    Registries.ACTIVITY);
@@ -97,8 +95,8 @@ public class JanksonFactory {
 		register(builder, BlockPredicateType.class,          Registries.BLOCK_PREDICATE_TYPE);
 		register(builder, BlockStateProviderType.class,      Registries.BLOCK_STATE_PROVIDER_TYPE);
 		register(builder, Carver.class,                      Registries.CARVER);
-		register(builder, CatVariant.class,                  Registries.CAT_VARIANT);
 		register(builder, ChunkStatus.class,                 Registries.CHUNK_STATUS);
+		register(builder, ChunkTicketType.class,             Registries.TICKET_TYPE);
 		register(builder, ConsumeEffect.Type.class,          Registries.CONSUME_EFFECT_TYPE);
 		register(builder, Criterion.class,                   Registries.CRITERION);
 		register(builder, EntityAttribute.class,             Registries.ATTRIBUTE);
@@ -108,13 +106,11 @@ public class JanksonFactory {
 		register(builder, FloatProviderType.class,           Registries.FLOAT_PROVIDER_TYPE);
 		register(builder, Fluid.class,                       Registries.FLUID);
 		register(builder, FoliagePlacerType.class,           Registries.FOLIAGE_PLACER_TYPE);
-		register(builder, FrogVariant.class,                 Registries.FROG_VARIANT);
 		register(builder, GameEvent.class,                   Registries.GAME_EVENT);
 		register(builder, HeightProviderType.class,          Registries.HEIGHT_PROVIDER_TYPE);
 		register(builder, IntProviderType.class,             Registries.INT_PROVIDER_TYPE);
 		register(builder, Item.class,                        Registries.ITEM);
 		register(builder, ItemGroup.class,                   Registries.ITEM_GROUP);
-		register(builder, ItemSubPredicate.Type.class,       Registries.ITEM_SUB_PREDICATE_TYPE);
 		register(builder, LootConditionType.class,           Registries.LOOT_CONDITION_TYPE);
 		register(builder, LootFunctionType.class,            Registries.LOOT_FUNCTION_TYPE);
 		register(builder, LootNbtProviderType.class,         Registries.LOOT_NBT_PROVIDER_TYPE);
