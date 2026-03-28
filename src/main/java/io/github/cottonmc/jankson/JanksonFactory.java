@@ -5,6 +5,9 @@ import blue.endless.jankson.JsonElement;
 import blue.endless.jankson.JsonNull;
 import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
+import blue.endless.jankson.api.DeserializationException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.core.Registry;
@@ -169,5 +172,38 @@ public class JanksonFactory {
 	public static Jankson createJankson() {
 		return builder().build();
 	}
-	
+
+    /**
+     * Registers a codec-based serializer and deserializer to a Jankson builder.
+     *
+     * @param builder the builder
+     * @param type    the serialized type
+     * @param codec   the codec
+     * @param <T>     the serialized type
+     * @since 12.0.0
+     */
+    public static <T> void registerCodecBasedSerializer(Jankson.Builder builder, Class<T> type, Codec<T> codec) {
+        registerCodecBasedSerializer(builder, type, codec, JanksonOps.INSTANCE);
+    }
+
+    /**
+     * Registers a codec-based serializer and deserializer to a Jankson builder.
+     * This overload can use a different {@link DynamicOps} instance (e.g. {@link net.minecraft.resources.RegistryOps}).
+     *
+     * @param builder the builder
+     * @param type    the serialized type
+     * @param codec   the codec
+     * @param ops     the {@link DynamicOps}
+     * @param <T>     the serialized type
+     * @since 12.0.0
+     */
+    public static <T> void registerCodecBasedSerializer(Jankson.Builder builder, Class<T> type, Codec<T> codec, DynamicOps<JsonElement> ops) {
+        builder.registerDeserializer(JsonElement.class, type, (jsonElement, m) -> {
+            return codec.parse(ops, jsonElement).getOrThrow(DeserializationException::new);
+        });
+
+        builder.registerSerializer(type, (t, marshaller) -> {
+            return codec.encodeStart(ops, t).getOrThrow();
+        });
+    }
 }
