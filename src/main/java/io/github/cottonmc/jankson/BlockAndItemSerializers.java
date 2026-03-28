@@ -7,17 +7,17 @@ import blue.endless.jankson.JsonElement;
 import blue.endless.jankson.JsonObject;
 import blue.endless.jankson.JsonPrimitive;
 import blue.endless.jankson.api.Marshaller;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.registry.Registries;
-import net.minecraft.state.property.Property;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public class BlockAndItemSerializers {
 	public static BlockState getBlockStatePrimitive(String blockIdString, Marshaller m) {
-		Optional<Block> blockOpt = Registries.BLOCK.getOptionalValue(Identifier.of(blockIdString));
+		Optional<Block> blockOpt = BuiltInRegistries.BLOCK.getOptional(Identifier.parse(blockIdString));
 		if (blockOpt.isPresent()) {
-			return blockOpt.get().getDefaultState();
+			return blockOpt.get().defaultBlockState();
 		} else {
 			return null;
 		}
@@ -30,10 +30,10 @@ public class BlockAndItemSerializers {
 	public static BlockState getBlockState(JsonObject json, Marshaller m) {
 		String blockIdString = json.get(String.class, "block");
 		
-		Block block = Registries.BLOCK.getOptionalValue(Identifier.of(blockIdString)).orElse(null);
+		Block block = BuiltInRegistries.BLOCK.getOptional(Identifier.parse(blockIdString)).orElse(null);
 		if (block==null) return null;
 		
-		BlockState state = block.getDefaultState();
+		BlockState state = block.defaultBlockState();
 		JsonObject stateObject = json.getObject("BlockStateTag");
 		if (stateObject==null) stateObject = json;
 		
@@ -54,15 +54,15 @@ public class BlockAndItemSerializers {
 	}
 	
 	public static JsonElement saveBlockState(BlockState state, Marshaller m) {
-		BlockState defaultState = state.getBlock().getDefaultState();
+		BlockState defaultState = state.getBlock().defaultBlockState();
 		
 		if (state.equals(defaultState)) {
 			//Use a String for the blockID only
-			return new JsonPrimitive( Registries.BLOCK.getId(state.getBlock()).toString() );
+			return new JsonPrimitive( BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString() );
 			
 		} else {
 			JsonObject result = new JsonObject();
-			result.put("block", new JsonPrimitive( Registries.BLOCK.getId(state.getBlock()).toString() ));
+			result.put("block", new JsonPrimitive( BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString() ));
 			JsonObject stateObject = result;
 			for(Property<?> property : state.getProperties()) {
 				String key = property.getName();
@@ -74,7 +74,7 @@ public class BlockAndItemSerializers {
 			}
 			
 			for(Property<?> property : state.getProperties()) {
-				if (state.get(property).equals(defaultState.get(property))) continue;
+				if (state.getValue(property).equals(defaultState.getValue(property))) continue;
 				String key = property.getName();
 				String val = getProperty(state, property);
 				stateObject.put(key, new JsonPrimitive(val));
@@ -85,15 +85,15 @@ public class BlockAndItemSerializers {
 	}
 	
 	public static <T extends Comparable<T>> BlockState withProperty(BlockState state, Property<T> property, String stringValue) {
-		Optional<T> val = property.parse(stringValue);
+		Optional<T> val = property.getValue(stringValue);
 		if (val.isPresent()) {
-			return state.with(property, val.get());
+			return state.setValue(property, val.get());
 		} else {
 			return state;
 		}
 	}
 	
 	public static <T extends Comparable<T>> String getProperty(BlockState state, Property<T> property) {
-		return property.name(state.get(property));
+		return property.getName(state.getValue(property));
 	}
 }
