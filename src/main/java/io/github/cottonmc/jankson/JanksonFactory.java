@@ -8,7 +8,7 @@ import blue.endless.jankson.JsonPrimitive;
 import blue.endless.jankson.api.DeserializationException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
-import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.predicates.DataComponentPredicate;
@@ -67,7 +67,6 @@ import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.PosRuleTestType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTestType;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.rule.blockentity.RuleBlockEntityModifierType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
@@ -139,7 +138,6 @@ public class JanksonFactory {
 		register(builder, StructurePlacementType.class,      BuiltInRegistries.STRUCTURE_PLACEMENT);
 		register(builder, StructurePieceType.class,          BuiltInRegistries.STRUCTURE_PIECE);
 		register(builder, StructurePoolElementType.class,    BuiltInRegistries.STRUCTURE_POOL_ELEMENT);
-		register(builder, StructureProcessorType.class,      BuiltInRegistries.STRUCTURE_PROCESSOR);
 		register(builder, StructureType.class,               BuiltInRegistries.STRUCTURE_TYPE);
 		register(builder, TicketType.class,                  BuiltInRegistries.TICKET_TYPE);
 		register(builder, TreeDecoratorType.class,           BuiltInRegistries.TREE_DECORATOR_TYPE);

@@ -119,6 +119,15 @@ public class JanksonOps implements DynamicOps<JsonElement> {
 	}
 
 	@Override
+	public DataResult<Boolean> getBooleanValue(JsonElement input) {
+		if (input instanceof JsonPrimitive primitive && primitive.getValue() instanceof Boolean b) {
+			return DataResult.success(b);
+		}
+
+		return DataResult.error(() -> "Not a boolean: " + input);
+	}
+
+	@Override
 	public JsonElement createBoolean(boolean value) {
 		return value ? JsonPrimitive.TRUE : JsonPrimitive.FALSE;
 	}
