@@ -14,7 +14,7 @@
     "sources": "https://github.com/CottonMC/Jankson-Fabric"
   },
   "depends": {
-    "minecraft": ">=26.2"
+    "minecraft": ">=26.3-rc.2"
   },
 
   "license": "MIT",
