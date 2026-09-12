@@ -67,7 +67,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.rule.blockent
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 
-public class JanksonFactory {
+public final class JanksonFactory {
+	private JanksonFactory() {
+	}
+
 	public static Jankson.Builder builder() {
 		Jankson.Builder builder = Jankson.builder();
 				

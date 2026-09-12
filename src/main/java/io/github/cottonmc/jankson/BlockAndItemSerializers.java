@@ -13,7 +13,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
-public class BlockAndItemSerializers {
+public final class BlockAndItemSerializers {
+	private BlockAndItemSerializers() {
+	}
+
 	public static BlockState getBlockStatePrimitive(String blockIdString, Marshaller m) {
 		Optional<Block> blockOpt = BuiltInRegistries.BLOCK.getOptional(Identifier.parse(blockIdString));
 		if (blockOpt.isPresent()) {
